@@ -20,26 +20,30 @@
 (function (NS) {
 
   NS.DOM = function (dom) {
+    var e, attr, i, max, child, j, maxj;
+
     if (typeof (dom) === "string") { // Is an String
       return document.createTextNode(dom);
     } else if (dom.nodeType) { // Is a DOM Node
       return dom;
     } else if (dom.tag) { //
-      var e = document.createElement(dom.tag);
-
+      e = document.createElement(dom.tag);
+      
       // attributes
       if (dom.attr) {
-        for (var attr in dom.attr) {
-          e.setAttribute(attr, dom.attr[attr]);
+        for (attr in dom.attr) {
+          if (dom.attr.hasOwnProperty(attr)) {
+            e.setAttribute(attr, dom.attr[attr]);
+          }
         }
       }
 
       // children. Always an array
       if (dom.children) {
-        for (var i = 0, max = dom.children.length; i < max; i++) {
-          var child = dom.children[i];
+        for (i = 0, max = dom.children.length; i < max; i++) {
+          child = dom.children[i];
           if (child.jquery) {
-            for (var j = 0, maxj = child.length; j < maxj; j++) {
+            for (j = 0, maxj = child.length; j < maxj; j++) {
               e.appendChild(NS.DOM(child[j]));
             }
           } else {
@@ -49,7 +53,7 @@
       }
       return e;
     }
-  }
+  };
 
   NS.NODE = function (tag, attr, children) {
     return {
@@ -57,5 +61,5 @@
       attr: attr,
       children: children
     };
-  }
+  };
 }(window));
